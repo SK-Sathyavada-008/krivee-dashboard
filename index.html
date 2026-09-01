@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KriVee</title>
+<title>KriVee — Focus & Study Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/study-planner.css">
 <style>
   :root{
     --bg:#FAF9F5;
@@ -31,6 +32,7 @@
   }
   .hidden{display:none !important;}
 
+  /* Login Screen */
   #login-screen{
     min-height:100vh;
     display:flex;
@@ -41,11 +43,11 @@
   .login-box{width:100%;max-width:380px;}
   .login-mark{
     font-family:'Fraunces',serif;
-    font-weight:500;
-    font-size:15px;
+    font-weight:600;
+    font-size:18px;
     letter-spacing:0.02em;
     color:var(--sage);
-    margin-bottom:48px;
+    margin-bottom:36px;
   }
   .login-box h1{
     font-family:'Fraunces',serif;
@@ -79,55 +81,17 @@
     background:var(--ink);
     border:none;
     padding:12px 22px;
-    border-radius:3px;
+    border-radius:4px;
     cursor:pointer;
     transition:background .15s ease;
+    width:100%;
   }
   #login-form button:hover{background:var(--sage);}
 
-  #dashboard{min-height:100vh;}
-  header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:22px 40px;
-    border-bottom:1px solid var(--line);
+  /* Existing Kanban Task Board */
+  .kanban-container {
+    padding-top: 16px;
   }
-  .wordmark{
-    font-family:'Fraunces',serif;
-    font-weight:500;
-    font-size:18px;
-    letter-spacing:0.02em;
-  }
-  .header-right{display:flex;align-items:center;gap:18px;}
-  #greeting-user{font-size:14px;color:var(--ink-soft);}
-  #greeting-user strong{color:var(--ink);font-weight:500;}
-  #logout-btn{
-    font-family:'Inter',sans-serif;
-    font-size:13px;
-    color:var(--ink-soft);
-    background:none;
-    border:1px solid var(--line);
-    padding:7px 14px;
-    border-radius:3px;
-    cursor:pointer;
-    transition:all .15s ease;
-  }
-  #logout-btn:hover{border-color:var(--ink-soft);color:var(--ink);}
-
-  main{
-    max-width:1080px;
-    margin:0 auto;
-    padding:44px 32px 80px;
-  }
-  .page-heading{
-    font-family:'Fraunces',serif;
-    font-weight:500;
-    font-size:28px;
-    margin-bottom:6px;
-  }
-  .page-sub{color:var(--ink-soft);font-size:14px;margin-bottom:32px;}
-
   #add-task-form{display:flex;gap:10px;margin-bottom:6px;}
   #task-input{
     flex:1;
@@ -135,7 +99,7 @@
     font-size:14px;
     padding:11px 14px;
     border:1px solid var(--line);
-    border-radius:3px;
+    border-radius:4px;
     background:var(--surface);
     outline:none;
     transition:border-color .15s ease;
@@ -146,7 +110,7 @@
     font-size:13px;
     padding:0 12px;
     border:1px solid var(--line);
-    border-radius:3px;
+    border-radius:4px;
     background:var(--surface);
     color:var(--ink-soft);
     outline:none;
@@ -160,7 +124,7 @@
     background:var(--ink);
     border:none;
     padding:0 20px;
-    border-radius:3px;
+    border-radius:4px;
     cursor:pointer;
     transition:background .15s ease;
   }
@@ -175,7 +139,7 @@
   .column{
     background:var(--surface);
     border:1px solid var(--line);
-    border-radius:6px;
+    border-radius:8px;
     padding:16px;
     min-height:320px;
     display:flex;
@@ -219,7 +183,7 @@
   .task-card{
     background:var(--surface);
     border:1px solid var(--line);
-    border-radius:5px;
+    border-radius:6px;
     padding:12px 12px;
     cursor:grab;
     transition:box-shadow .15s ease, border-color .15s ease, opacity .15s ease;
@@ -258,18 +222,17 @@
 
   @media (max-width:800px){
     .board{grid-template-columns:1fr;}
-    header{padding:18px 20px;}
-    main{padding:32px 20px 60px;}
   }
 </style>
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-mark">KriVee</div>
     <h1>Welcome back</h1>
-    <p>Sign in to your dashboard</p>
+    <p>Sign in to your study dashboard</p>
     <form id="login-form">
       <label class="field-label" for="name-input">Username</label>
       <input type="text" id="name-input" class="text-input" placeholder="sk or veer" autocomplete="off">
@@ -283,61 +246,385 @@
   </div>
 </div>
 
+<!-- MAIN DASHBOARD -->
 <div id="dashboard" class="hidden">
-  <header>
-    <div class="wordmark">KriVee</div>
-    <div class="header-right">
-      <span id="greeting-user"></span>
-      <button id="logout-btn">Log Out</button>
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="wordmark">KriVee</div>
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" data-view="dashboard">📊 Dashboard</button>
+        <button class="nav-tab-btn" data-view="roadmap">🗺️ Roadmap</button>
+        <button class="nav-tab-btn" data-view="daily-plan">📅 Daily Plan</button>
+        <button class="nav-tab-btn" data-view="calendar">🗓️ Calendar</button>
+        <button class="nav-tab-btn" data-view="leaderboard">🏆 Leaderboard</button>
+        <button class="nav-tab-btn" data-view="analytics">📈 Analytics</button>
+        <button class="nav-tab-btn" data-view="weekly-review">📝 Review</button>
+        <button class="nav-tab-btn" data-view="kanban">📌 Tasks Board</button>
+      </nav>
+    </div>
+
+    <div class="header-status">
+      <span class="status-pill streak-pill">🔥 <span id="header-streak-val">0d</span></span>
+      <span class="status-pill xp-pill">⚡ <span id="header-xp-val">0 XP</span></span>
+      <div class="user-badge">
+        <div class="user-avatar" id="header-user-avatar">V</div>
+        <span id="header-user-name">Veer</span>
+      </div>
+      <button class="icon-btn" id="btn-settings" title="Settings">⚙️</button>
+      <button class="btn-secondary" id="logout-btn" style="padding:6px 12px;font-size:12.5px;">Log Out</button>
     </div>
   </header>
 
-  <main>
-    <div class="page-heading" id="page-heading"></div>
-    <div class="page-sub" id="page-date"></div>
+  <main class="study-container">
+    <!-- View 1: Main Dashboard Overview -->
+    <section class="section-view active" id="view-dashboard">
+      <div id="dashboard-content"></div>
+    </section>
 
-    <form id="add-task-form">
-      <input type="text" id="task-input" placeholder="Add a task, e.g. Review Q3 report">
-      <select id="priority-select">
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-        <option value="low">Low</option>
-      </select>
-      <button type="submit">Add</button>
-    </form>
-    <div id="add-error"></div>
+    <!-- View 2: Study Roadmap -->
+    <section class="section-view" id="view-roadmap">
+      <div id="roadmap-content"></div>
+    </section>
 
-    <div class="board">
-      <div class="column" data-status="plans">
-        <div class="column-head">
-          <span class="column-title">Plans</span>
-          <span class="column-count" id="count-plans">0</span>
+    <!-- View 3: Daily Study Planner -->
+    <section class="section-view" id="view-daily-plan">
+      <div id="daily-plan-content"></div>
+    </section>
+
+    <!-- View 4: Monthly Activity Calendar -->
+    <section class="section-view" id="view-calendar">
+      <div id="calendar-content"></div>
+    </section>
+
+    <!-- View 5: Leaderboard & Gamification -->
+    <section class="section-view" id="view-leaderboard">
+      <div id="leaderboard-content"></div>
+    </section>
+
+    <!-- View 6: Productivity Insights & Analytics -->
+    <section class="section-view" id="view-analytics">
+      <div id="analytics-content"></div>
+    </section>
+
+    <!-- View 7: Weekly Retrospective / Review -->
+    <section class="section-view" id="view-weekly-review">
+      <div id="weekly-review-content"></div>
+    </section>
+
+    <!-- View 8: Legacy Kanban Tasks Board -->
+    <section class="section-view kanban-container" id="view-kanban">
+      <div class="page-header-row">
+        <div>
+          <h1 class="page-title">General Tasks Board</h1>
+          <div class="page-subtitle">Drag-and-drop workflow for quick sprint items</div>
         </div>
-        <div class="column-body" id="col-plans"></div>
       </div>
-      <div class="column" data-status="doing">
-        <div class="column-head">
-          <span class="column-title">Doing</span>
-          <span class="column-count" id="count-doing">0</span>
+
+      <form id="add-task-form">
+        <input type="text" id="task-input" placeholder="Add a quick task, e.g. Review Q3 report">
+        <select id="priority-select">
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+        <button type="submit">Add</button>
+      </form>
+      <div id="add-error"></div>
+
+      <div class="board">
+        <div class="column" data-status="plans">
+          <div class="column-head">
+            <span class="column-title">Plans</span>
+            <span class="column-count" id="count-plans">0</span>
+          </div>
+          <div class="column-body" id="col-plans"></div>
         </div>
-        <div class="column-body" id="col-doing"></div>
-      </div>
-      <div class="column" data-status="finished">
-        <div class="column-head">
-          <span class="column-title">Finished</span>
-          <span class="column-count" id="count-finished">0</span>
+        <div class="column" data-status="doing">
+          <div class="column-head">
+            <span class="column-title">Doing</span>
+            <span class="column-count" id="count-doing">0</span>
+          </div>
+          <div class="column-body" id="col-doing"></div>
         </div>
-        <div class="column-body" id="col-finished"></div>
+        <div class="column" data-status="finished">
+          <div class="column-head">
+            <span class="column-title">Finished</span>
+            <span class="column-count" id="count-finished">0</span>
+          </div>
+          <div class="column-body" id="col-finished"></div>
+        </div>
       </div>
-    </div>
+    </section>
   </main>
 </div>
 
+<!-- ==================== MODALS ==================== -->
+
+<!-- Modal: Create / Edit Subject -->
+<div class="modal-backdrop hidden" id="modal-subject">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title" id="subject-title-modal">Create Study Subject</h3>
+      <button class="modal-close-btn">&times;</button>
+    </div>
+    <form id="form-subject">
+      <div class="modal-body">
+        <input type="hidden" id="subject-id-input">
+        <div class="form-group">
+          <label class="form-label">Subject Name *</label>
+          <input type="text" id="subj-name-input" class="form-control" placeholder="e.g. Data Structures & Algorithms" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description / Goal</label>
+          <textarea id="subj-desc-input" class="form-control" placeholder="What are you mastering in this subject?"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select id="subj-priority-input" class="form-control">
+              <option value="high">High Priority</option>
+              <option value="medium" selected>Medium Priority</option>
+              <option value="low">Low Priority</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Estimated Hours</label>
+            <input type="number" id="subj-hours-input" class="form-control" value="20" min="1" step="0.5">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Start Date</label>
+            <input type="date" id="subj-start-input" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Completion Date</label>
+            <input type="date" id="subj-target-input" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn-primary">Save Subject</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Create / Edit Topic -->
+<div class="modal-backdrop hidden" id="modal-topic">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title" id="topic-title-modal">Add Study Topic</h3>
+      <button class="modal-close-btn">&times;</button>
+    </div>
+    <form id="form-topic">
+      <div class="modal-body">
+        <input type="hidden" id="topic-id-input">
+        <div class="form-group">
+          <label class="form-label">Parent Subject *</label>
+          <select id="topic-subj-select" class="form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Topic Name *</label>
+          <input type="text" id="topic-name-input" class="form-control" placeholder="e.g. Binary Search & Trees" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input type="text" id="topic-desc-input" class="form-control" placeholder="Key concepts, algorithms, or chapters">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Estimated Hours</label>
+            <input type="number" id="topic-hours-input" class="form-control" value="4" min="0.5" step="0.5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select id="topic-priority-input" class="form-control">
+              <option value="high">High</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subtasks (1 per line)</label>
+          <textarea id="topic-subtasks-input" class="form-control" placeholder="Solve 5 Medium problems&#10;Implement iterative DFS&#10;Write summary notes"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes / Resources</label>
+          <input type="text" id="topic-notes-input" class="form-control" placeholder="Links, book chapters, or notes">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn-primary">Save Topic</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Add Daily Study Task -->
+<div class="modal-backdrop hidden" id="modal-add-task">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title">Schedule Study Task</h3>
+      <button class="modal-close-btn">&times;</button>
+    </div>
+    <form id="form-add-task">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Task Description *</label>
+          <input type="text" id="task-modal-title" class="form-control" placeholder="e.g. Solve 3 Binary Tree LCA problems" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <select id="task-modal-subj" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Topic</label>
+            <select id="task-modal-topic" class="form-control" disabled></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Scheduled Date</label>
+            <input type="date" id="task-modal-date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Planned Duration (Hours)</label>
+            <input type="number" id="task-modal-duration" class="form-control" value="1.5" min="0.25" step="0.25">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select id="task-modal-priority" class="form-control">
+              <option value="high">High</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes</label>
+            <input type="text" id="task-modal-notes" class="form-control" placeholder="e.g. LeetCode 236, 1644">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn-primary">Add Task</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Focus Subject & Commitment System -->
+<div class="modal-backdrop hidden" id="modal-focus">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title">🎯 Set Current Focus & Commitment</h3>
+      <button class="modal-close-btn">&times;</button>
+    </div>
+    <form id="form-focus">
+      <div class="modal-body">
+        <p style="font-size:13.5px;color:var(--ink-soft);margin-bottom:16px;">
+          Committing to one primary focus subject prevents switching before mastering topics.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Select Focus Subject *</label>
+          <select id="focus-subj-select" class="form-control" required></select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Commitment Start Date</label>
+            <input type="date" id="focus-start-input" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Committed Until (Target Date) *</label>
+            <input type="date" id="focus-end-input" class="form-control" required>
+          </div>
+        </div>
+
+        <div id="focus-reason-group" style="display:none;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:14px;margin-top:14px;">
+          <div style="font-size:12.5px;font-weight:600;color:#92400E;margin-bottom:6px;">
+            ⚠️ Early Focus Switch Detected
+          </div>
+          <p style="font-size:12px;color:#78350F;margin-bottom:10px;">
+            You are changing focus before your commitment period ended. Please record a reason to track abandonment patterns:
+          </p>
+          <div class="form-group" style="margin-bottom:10px;">
+            <select id="focus-reason-select" class="form-control">
+              <option value="Topic completed">Topic completed</option>
+              <option value="Plan changed">Plan changed</option>
+              <option value="Difficulty">Difficulty</option>
+              <option value="Emergency">Emergency</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <input type="text" id="focus-reason-note" class="form-control" placeholder="Optional reflection note...">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn-primary">Lock Commitment</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Settings & Profile -->
+<div class="modal-backdrop hidden" id="modal-settings">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title">⚙️ Preferences & Study Settings</h3>
+      <button class="modal-close-btn">&times;</button>
+    </div>
+    <form id="form-settings">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Active User Profile</label>
+          <select id="settings-user-select" class="form-control">
+            <option value="veer">Veer</option>
+            <option value="sk">SK</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Daily Study Goal (Hours)</label>
+          <input type="number" id="settings-goal-input" class="form-control" min="1" max="12" step="0.5" value="3">
+          <span style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;display:block;">
+            Days where you study this amount (and complete tasks) will count towards your active streak 🔥
+          </span>
+        </div>
+
+        <div style="border-top:1px solid var(--line);padding-top:16px;margin-top:16px;">
+          <div style="font-size:12.5px;font-weight:600;color:var(--danger);margin-bottom:4px;">Danger Zone</div>
+          <p style="font-size:11.5px;color:var(--ink-soft);margin-bottom:10px;">Reset all study subjects, daily tasks, XP, and streaks back to zero.</p>
+          <button type="button" class="btn-danger" id="btn-reset-all-data">🧹 Reset All Data & Streaks to 0</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn-primary">Save Settings</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast Notifications Container -->
+<div id="toast-container"></div>
+
+<!-- Application ES Modules -->
 <script type="module">
+  import { store } from './js/study-store.js';
+  import { app } from './js/study-app.js';
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // TODO: Replace with your Firebase project configuration
+  // Firebase project configuration
   const firebaseConfig = {
     apiKey: "AIzaSyAUe0lWYTlidPDLCtW2zjWYMikAexcDhW0",
     authDomain: "krivee-dashboard.firebaseapp.com",
@@ -347,11 +634,11 @@
     appId: "1:452749524448:web:82c4505c5012a6a310bf85"
   };
 
-  let app, db, tasksCollection, unsubscribeSnapshot = null;
+  let fbApp, db, tasksCollection, unsubscribeSnapshot = null;
   
   try {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
+    fbApp = initializeApp(firebaseConfig);
+    db = getFirestore(fbApp);
     tasksCollection = collection(db, "tasks");
   } catch (error) {
     console.error("Firebase initialization error:", error);
@@ -380,10 +667,16 @@
       userName = user === 'sk' ? 'SK' : 'Veer';
       loginError.textContent = '';
       
+      // Update Store current user
+      store.setCurrentUser(user);
+
       // Transition to dashboard
       loginScreen.classList.add('hidden');
       dashboardScreen.classList.remove('hidden');
-      initDashboard();
+      
+      // Init App & Kanban Board
+      app.init();
+      initKanbanBoard();
     } else {
       loginError.textContent = 'Invalid username or password.';
     }
@@ -407,38 +700,28 @@
     return div.innerHTML;
   }
 
-  function initDashboard() {
-    document.getElementById('greeting-user').innerHTML = 'Signed in as <strong>' + escapeHtml(userName) + '</strong>';
-    document.getElementById('page-heading').textContent = 'Hi ' + escapeHtml(userName) + '.';
-    document.getElementById('page-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-    
+  function initKanbanBoard() {
     if (db) {
-      setupRealtimeUpdates();
+      setupRealtimeKanbanUpdates();
     } else {
-      // Fallback for placeholder config if it's not setup yet
-      console.warn("Firestore not available. Using local placeholder tasks.");
       tasks = [
-        { id: '1', title: 'Review quarterly budget draft (Local)', priority: 'high', status: 'plans' },
-        { id: '2', title: 'Reply to onboarding checklist thread (Local)', priority: 'medium', status: 'doing' }
+        { id: '1', title: 'Review quarterly algorithms roadmap (Local)', priority: 'high', status: 'plans' },
+        { id: '2', title: 'Implement sliding window patterns (Local)', priority: 'medium', status: 'doing' }
       ];
-      renderBoard();
+      renderKanbanBoard();
     }
   }
 
-  function setupRealtimeUpdates() {
+  function setupRealtimeKanbanUpdates() {
     const q = query(tasksCollection, orderBy('createdAt', 'desc'));
-    
     unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
       tasks = [];
       snapshot.forEach((doc) => {
         tasks.push({ id: doc.id, ...doc.data() });
       });
-      renderBoard();
+      renderKanbanBoard();
     }, (error) => {
       console.error("Error fetching tasks from Firestore:", error);
-      if(error.code === 'permission-denied') {
-          console.error("Permission denied. Make sure Firestore rules allow read/write.");
-      }
     });
   }
 
@@ -473,14 +756,9 @@
         addError.textContent = 'Failed to save task to database.';
       }
     } else {
-      // Fallback local
       tasks.unshift({ id: Date.now().toString(), ...newTask, createdAt: new Date() });
-      renderBoard();
+      renderKanbanBoard();
     }
-  });
-
-  taskInput.addEventListener('input', function() {
-    if (addError.textContent) addError.textContent = '';
   });
 
   async function deleteTask(id) {
@@ -492,7 +770,7 @@
       }
     } else {
       tasks = tasks.filter(t => t.id !== id);
-      renderBoard();
+      renderKanbanBoard();
     }
   }
 
@@ -509,7 +787,7 @@
       const t = tasks.find(t => t.id === id);
       if (t) {
         t.status = newStatus;
-        renderBoard();
+        renderKanbanBoard();
       }
     }
   }
@@ -539,13 +817,15 @@
     return card;
   }
 
-  function renderBoard() {
+  function renderKanbanBoard() {
     const statuses = ['plans', 'doing', 'finished'];
     statuses.forEach(function(status) {
       const col = document.getElementById('col-' + status);
+      if (!col) return;
       const items = tasks.filter(t => t.status === status);
       col.innerHTML = '';
-      document.getElementById('count-' + status).textContent = items.length;
+      const countEl = document.getElementById('count-' + status);
+      if (countEl) countEl.textContent = items.length;
       if (items.length === 0) {
         const empty = document.createElement('div');
         empty.className = 'column-empty';
@@ -570,12 +850,10 @@
       e.preventDefault();
       col.classList.remove('drag-over');
       if (draggedId === null) return;
-      
       const newStatus = col.dataset.status;
       updateTaskStatus(draggedId, newStatus);
     });
   });
-
 </script>
 </body>
 </html>
