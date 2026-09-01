@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KriVee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF9F5;
+    --surface:#FFFFFF;
+    --ink:#232420;
+    --ink-soft:#6B6C64;
+    --ink-faint:#A5A69C;
+    --line:#E4E2D8;
+    --sage:#59674C;
+    --sage-soft:#EEF0E7;
+    --clay:#B3714B;
+    --clay-soft:#F5E9E1;
+    --blue:#3E6B8F;
+    --blue-soft:#E8EFF3;
+    --danger:#A2453A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+  }
+  .hidden{display:none !important;}
+
+  #login-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .login-box{width:100%;max-width:380px;}
+  .login-mark{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:15px;
+    letter-spacing:0.02em;
+    color:var(--sage);
+    margin-bottom:48px;
+  }
+  .login-box h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:32px;
+    line-height:1.25;
+    margin-bottom:8px;
+  }
+  .login-box p{color:var(--ink-soft);font-size:14px;margin-bottom:32px;}
+  .field-label{display:block;font-size:13px;color:var(--ink-soft);margin-bottom:8px;}
+  .text-input{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    padding:12px 0;
+    border:none;
+    border-bottom:1.5px solid var(--line);
+    background:transparent;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  .text-input:focus{border-bottom-color:var(--sage);}
+  .input-error{font-size:13px;color:var(--danger);margin-top:8px;min-height:16px;}
+  #login-form button{
+    margin-top:28px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    color:#fff;
+    background:var(--ink);
+    border:none;
+    padding:12px 22px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  #login-form button:hover{background:var(--sage);}
+
+  #dashboard{min-height:100vh;}
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 40px;
+    border-bottom:1px solid var(--line);
+  }
+  .wordmark{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:18px;
+    letter-spacing:0.02em;
+  }
+  .header-right{display:flex;align-items:center;gap:18px;}
+  #greeting-user{font-size:14px;color:var(--ink-soft);}
+  #greeting-user strong{color:var(--ink);font-weight:500;}
+  #logout-btn{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    color:var(--ink-soft);
+    background:none;
+    border:1px solid var(--line);
+    padding:7px 14px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  #logout-btn:hover{border-color:var(--ink-soft);color:var(--ink);}
+
+  main{
+    max-width:1080px;
+    margin:0 auto;
+    padding:44px 32px 80px;
+  }
+  .page-heading{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:28px;
+    margin-bottom:6px;
+  }
+  .page-sub{color:var(--ink-soft);font-size:14px;margin-bottom:32px;}
+
+  #add-task-form{display:flex;gap:10px;margin-bottom:6px;}
+  #task-input{
+    flex:1;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:11px 14px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--surface);
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  #task-input:focus{border-color:var(--sage);}
+  #priority-select{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    padding:0 12px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--surface);
+    color:var(--ink-soft);
+    outline:none;
+    cursor:pointer;
+  }
+  #add-task-form button{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    color:#fff;
+    background:var(--ink);
+    border:none;
+    padding:0 20px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  #add-task-form button:hover{background:var(--sage);}
+  #add-error{font-size:13px;color:var(--danger);margin:8px 0 24px;min-height:16px;}
+
+  .board{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+  }
+  .column{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:16px;
+    min-height:320px;
+    display:flex;
+    flex-direction:column;
+  }
+  .column.drag-over{border-color:var(--sage);background:var(--sage-soft);}
+  .column-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--line);
+  }
+  .column-title{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:16px;
+  }
+  .column-count{
+    font-size:12px;
+    color:var(--ink-soft);
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:2px 9px;
+  }
+  .column-body{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .column-empty{
+    font-size:13px;
+    color:var(--ink-faint);
+    text-align:center;
+    padding:24px 8px;
+  }
+
+  .task-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:12px 12px;
+    cursor:grab;
+    transition:box-shadow .15s ease, border-color .15s ease, opacity .15s ease;
+  }
+  .task-card:hover{border-color:var(--ink-faint);}
+  .task-card.dragging{opacity:0.4;}
+  .task-title{
+    font-size:14px;
+    line-height:1.4;
+    margin-bottom:8px;
+  }
+  .task-foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .tag{
+    font-size:11.5px;
+    padding:3px 9px;
+    border-radius:20px;
+    font-weight:500;
+  }
+  .tag-high{background:var(--clay-soft);color:var(--clay);}
+  .tag-medium{background:var(--sage-soft);color:var(--sage);}
+  .tag-low{background:var(--blue-soft);color:var(--blue);}
+  .task-delete{
+    background:none;
+    border:none;
+    color:var(--ink-faint);
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    padding:2px 4px;
+  }
+  .task-delete:hover{color:var(--danger);}
+
+  @media (max-width:800px){
+    .board{grid-template-columns:1fr;}
+    header{padding:18px 20px;}
+    main{padding:32px 20px 60px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-mark">KriVee</div>
+    <h1>Welcome back</h1>
+    <p>Sign in to your dashboard</p>
+    <form id="login-form">
+      <label class="field-label" for="name-input">Username</label>
+      <input type="text" id="name-input" class="text-input" placeholder="sk or veer" autocomplete="off">
+      
+      <label class="field-label" for="pass-input" style="margin-top: 24px;">Password</label>
+      <input type="password" id="pass-input" class="text-input" placeholder="Enter password" autocomplete="off">
+      <div id="login-error" class="input-error"></div>
+
+      <button type="submit">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<div id="dashboard" class="hidden">
+  <header>
+    <div class="wordmark">KriVee</div>
+    <div class="header-right">
+      <span id="greeting-user"></span>
+      <button id="logout-btn">Log Out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-heading" id="page-heading"></div>
+    <div class="page-sub" id="page-date"></div>
+
+    <form id="add-task-form">
+      <input type="text" id="task-input" placeholder="Add a task, e.g. Review Q3 report">
+      <select id="priority-select">
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="low">Low</option>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+    <div id="add-error"></div>
+
+    <div class="board">
+      <div class="column" data-status="plans">
+        <div class="column-head">
+          <span class="column-title">Plans</span>
+          <span class="column-count" id="count-plans">0</span>
+        </div>
+        <div class="column-body" id="col-plans"></div>
+      </div>
+      <div class="column" data-status="doing">
+        <div class="column-head">
+          <span class="column-title">Doing</span>
+          <span class="column-count" id="count-doing">0</span>
+        </div>
+        <div class="column-body" id="col-doing"></div>
+      </div>
+      <div class="column" data-status="finished">
+        <div class="column-head">
+          <span class="column-title">Finished</span>
+          <span class="column-count" id="count-finished">0</span>
+        </div>
+        <div class="column-body" id="col-finished"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  // TODO: Replace with your Firebase project configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAUe0lWYTlidPDLCtW2zjWYMikAexcDhW0",
+    authDomain: "krivee-dashboard.firebaseapp.com",
+    projectId: "krivee-dashboard",
+    storageBucket: "krivee-dashboard.firebasestorage.app",
+    messagingSenderId: "452749524448",
+    appId: "1:452749524448:web:82c4505c5012a6a310bf85"
+  };
+
+  let app, db, tasksCollection, unsubscribeSnapshot = null;
+  
+  try {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    tasksCollection = collection(db, "tasks");
+  } catch (error) {
+    console.error("Firebase initialization error:", error);
+  }
+
+  let userName = null;
+  let tasks = [];
+  let draggedId = null;
+
+  // Login Elements
+  const loginScreen = document.getElementById('login-screen');
+  const dashboardScreen = document.getElementById('dashboard');
+  const loginForm = document.getElementById('login-form');
+  const nameInput = document.getElementById('name-input');
+  const passInput = document.getElementById('pass-input');
+  const loginError = document.getElementById('login-error');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  // Authenticate
+  loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const user = nameInput.value.trim().toLowerCase();
+    const pass = passInput.value;
+
+    if ((user === 'sk' || user === 'veer') && pass === 'krivee') {
+      userName = user === 'sk' ? 'SK' : 'Veer';
+      loginError.textContent = '';
+      
+      // Transition to dashboard
+      loginScreen.classList.add('hidden');
+      dashboardScreen.classList.remove('hidden');
+      initDashboard();
+    } else {
+      loginError.textContent = 'Invalid username or password.';
+    }
+  });
+
+  logoutBtn.addEventListener('click', function() {
+    userName = null;
+    if (unsubscribeSnapshot) {
+      unsubscribeSnapshot();
+      unsubscribeSnapshot = null;
+    }
+    dashboardScreen.classList.add('hidden');
+    loginScreen.classList.remove('hidden');
+    nameInput.value = '';
+    passInput.value = '';
+  });
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function initDashboard() {
+    document.getElementById('greeting-user').innerHTML = 'Signed in as <strong>' + escapeHtml(userName) + '</strong>';
+    document.getElementById('page-heading').textContent = 'Hi ' + escapeHtml(userName) + '.';
+    document.getElementById('page-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    
+    if (db) {
+      setupRealtimeUpdates();
+    } else {
+      // Fallback for placeholder config if it's not setup yet
+      console.warn("Firestore not available. Using local placeholder tasks.");
+      tasks = [
+        { id: '1', title: 'Review quarterly budget draft (Local)', priority: 'high', status: 'plans' },
+        { id: '2', title: 'Reply to onboarding checklist thread (Local)', priority: 'medium', status: 'doing' }
+      ];
+      renderBoard();
+    }
+  }
+
+  function setupRealtimeUpdates() {
+    const q = query(tasksCollection, orderBy('createdAt', 'desc'));
+    
+    unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
+      tasks = [];
+      snapshot.forEach((doc) => {
+        tasks.push({ id: doc.id, ...doc.data() });
+      });
+      renderBoard();
+    }, (error) => {
+      console.error("Error fetching tasks from Firestore:", error);
+      if(error.code === 'permission-denied') {
+          console.error("Permission denied. Make sure Firestore rules allow read/write.");
+      }
+    });
+  }
+
+  const addTaskForm = document.getElementById('add-task-form');
+  const taskInput = document.getElementById('task-input');
+  const prioritySelect = document.getElementById('priority-select');
+  const addError = document.getElementById('add-error');
+
+  addTaskForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const title = taskInput.value.trim();
+    if (!title) {
+      addError.textContent = 'Enter a task first.';
+      return;
+    }
+    addError.textContent = '';
+    
+    const newTask = { 
+      title: title, 
+      priority: prioritySelect.value, 
+      status: 'plans',
+      createdAt: serverTimestamp()
+    };
+    
+    taskInput.value = '';
+
+    if (db) {
+      try {
+        await addDoc(tasksCollection, newTask);
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        addError.textContent = 'Failed to save task to database.';
+      }
+    } else {
+      // Fallback local
+      tasks.unshift({ id: Date.now().toString(), ...newTask, createdAt: new Date() });
+      renderBoard();
+    }
+  });
+
+  taskInput.addEventListener('input', function() {
+    if (addError.textContent) addError.textContent = '';
+  });
+
+  async function deleteTask(id) {
+    if (db) {
+      try {
+        await deleteDoc(doc(db, "tasks", id));
+      } catch (error) {
+        console.error("Error deleting document: ", error);
+      }
+    } else {
+      tasks = tasks.filter(t => t.id !== id);
+      renderBoard();
+    }
+  }
+
+  async function updateTaskStatus(id, newStatus) {
+    if (db) {
+      try {
+        await updateDoc(doc(db, "tasks", id), {
+          status: newStatus
+        });
+      } catch (error) {
+        console.error("Error updating document: ", error);
+      }
+    } else {
+      const t = tasks.find(t => t.id === id);
+      if (t) {
+        t.status = newStatus;
+        renderBoard();
+      }
+    }
+  }
+
+  function makeCard(t) {
+    const card = document.createElement('div');
+    card.className = 'task-card';
+    card.draggable = true;
+    card.dataset.id = t.id;
+    card.innerHTML =
+      '<div class="task-title">' + escapeHtml(t.title) + '</div>' +
+      '<div class="task-foot">' +
+        '<span class="tag tag-' + t.priority + '">' + t.priority.charAt(0).toUpperCase() + t.priority.slice(1) + '</span>' +
+        '<button class="task-delete" aria-label="Delete task">&times;</button>' +
+      '</div>';
+
+    card.addEventListener('dragstart', function(e) {
+      draggedId = t.id;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', function() {
+      card.classList.remove('dragging');
+      draggedId = null;
+    });
+    card.querySelector('.task-delete').addEventListener('click', () => deleteTask(t.id));
+    return card;
+  }
+
+  function renderBoard() {
+    const statuses = ['plans', 'doing', 'finished'];
+    statuses.forEach(function(status) {
+      const col = document.getElementById('col-' + status);
+      const items = tasks.filter(t => t.status === status);
+      col.innerHTML = '';
+      document.getElementById('count-' + status).textContent = items.length;
+      if (items.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'column-empty';
+        empty.textContent = 'No tasks here.';
+        col.appendChild(empty);
+      } else {
+        items.forEach(t => col.appendChild(makeCard(t)));
+      }
+    });
+  }
+
+  document.querySelectorAll('.column').forEach(function(col) {
+    col.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      col.classList.add('drag-over');
+    });
+    col.addEventListener('dragleave', function() {
+      col.classList.remove('drag-over');
+    });
+    col.addEventListener('drop', function(e) {
+      e.preventDefault();
+      col.classList.remove('drag-over');
+      if (draggedId === null) return;
+      
+      const newStatus = col.dataset.status;
+      updateTaskStatus(draggedId, newStatus);
+    });
+  });
+
+</script>
+</body>
+</html>
