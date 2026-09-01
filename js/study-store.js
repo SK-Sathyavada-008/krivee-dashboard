@@ -716,7 +716,7 @@ class StudyStore {
 
   getLeaderboardData(filter = 'week') {
     // Users Veer and SK
-    const users = ['veer', 'sk'];
+    const users = ['sk', 'veer'];
     const now = new Date();
     
     return users.map(u => {
